@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard</title>
+  <link rel="icon" href="log.ico" type="image/x-icon">
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    header {
+      background-color: #3da4cf;
+      color: white;
+      padding: 10px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    header img {
+      height: 60px;
+      margin-right: 15px;
+    }
+
+    header h1 {
+      font-size: 1.5em;
+      margin: 0;
+    }
+
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .icon {
+      cursor: pointer;
+      font-size: 20px;
+      color: white;
+      transition: transform 0.2s;
+    }
+
+    .icon:hover {
+      transform: scale(1.2);
+      color: #ffd700;
+    }
+
+    nav {
+      background-color: #256b8e;
+      display: flex;
+      justify-content: flex-start;
+      padding: 10px 20px;
+      position: relative;
+    }
+
+    nav a {
+      color: white;
+      text-decoration: none;
+      margin-right: 20px;
+      font-weight: bold;
+      position: relative;
+    }
+
+    nav a::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 2px;
+      left: 0;
+      bottom: -5px;
+      background-color: #ffd700;
+      transition: width 0.3s;
+    }
+
+    nav a:hover::after {
+      width: 100%;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-content {
+      display: none;
+      position: absolute;
+      background-color: #3da4cf;
+      min-width: 150px;
+      box-shadow: 0px 8px 16px rgba(0,0,0,0.2);
+      z-index: 1;
+      border-radius: 4px;
+    }
+
+    .dropdown-content a {
+      color: white;
+      padding: 10px 12px;
+      display: block;
+      text-decoration: none;
+    }
+
+    .dropdown-content a:hover {
+      background-color: #256b8e;
+    }
+
+    .dropdown:hover .dropdown-content {
+      display: block;
+    }
+
+    .main {
+      display: flex;
+      justify-content: space-between;
+      padding: 20px;
+    }
+
+    .course-overview {
+      background-color: white;
+      width: 70%;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .course-overview h2 {
+      color: #256b8e;
+      border-bottom: 2px solid #3da4cf;
+      padding-bottom: 5px;
+    }
+
+    .course-list {
+      margin-top: 10px;
+    }
+
+    .course-item {
+      background-color: #f9f9f9;
+      border-left: 4px solid #3da4cf;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 4px;
+      transition: background-color 0.3s;
+    }
+
+    .course-item:hover {
+      background-color: #e6f2f8;
+    }
+
+    .course-overview button {
+      background-color: #3da4cf;
+      border: none;
+      color: white;
+      padding: 8px 16px;
+      margin: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .course-overview button:hover {
+      background-color: #256b8e;
+    }
+
+    .sidebar {
+      width: 25%;
+      background-color: white;
+      padding: 20px;
+      border-radius: 5px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+
+    .sidebar h3 {
+      color: #256b8e;
+    }
+
+    .sidebar ul {
+      list-style-type: none;
+      padding-left: 10px;
+    }
+
+    .sidebar ul li {
+      margin: 8px 0;
+    }
+
+    .sidebar ul li a {
+      color: #3da4cf;
+      text-decoration: none;
+    }
+
+    .sidebar ul li a:hover {
+      text-decoration: underline;
+    }
+
+    footer {
+      text-align: center;
+      padding: 10px;
+      background-color: #256b8e;
+      color: white;
+      margin-top: 20px;
+    }
+
+    .search-box input[type="text"] {
+      padding: 5px;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+
+    .search-box button {
+      background-color: #3da4cf;
+      border: none;
+      color: white;
+      padding: 6px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .search-box button:hover {
+      background-color: #256b8e;
+    }
+
+    .calendar {
+      margin-top: 20px;
+      background-color: #f1f1f1;
+      border-radius: 6px;
+      padding: 10px;
+      text-align: center;
+    }
+
+    .calendar h4 {
+      margin: 0;
+      color: #256b8e;
+    }
+  </style>
+  <script>
+    const courses = [
+      { title: 'HIV AND AIDS', instructor: 'Dr. Njeri Mwangi', status: 'Ongoing' },
+      { title: 'Economics History of Kenya', instructor: 'Prof. Odhiambo', status: 'Upcoming' },
+      { title: 'Basic Mathematics', instructor: 'Dr. Kamau', status: 'Ongoing' },
+      { title: 'Introduction to Sociology', instructor: 'Dr. Atieno', status: 'Completed' },
+      { title: 'Introduction to Logic', instructor: 'Dr. Mutua', status: 'Ongoing' }
+    ];
+
+    function updateDate() {
+      const dateElement = document.getElementById('date');
+      const today = new Date();
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      dateElement.innerText = today.toLocaleDateString('en-GB', options);
+    }
+
+    function loadCourses() {
+      const courseList = document.getElementById('course-list');
+      courseList.innerHTML = '';
+      courses.forEach(course => {
+        const div = document.createElement('div');
+        div.className = 'course-item';
+        div.innerHTML = `<strong>${course.title}</strong><br>Instructor: ${course.instructor}<br>Status: ${course.status}`;
+        courseList.appendChild(div);
+      });
+    }
+
+    window.onload = () => {
+      updateDate();
+      loadCourses();
+    }
+  </script>
+</head>
+<body>
+
+  <header>
+    <div style="display: flex; align-items: center;">
+      <img src="logo.png" alt="University Logo">
+      <div style="font-family: 'Bahnschrift Light Condensed', 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif">
+        <p>UNIVERSITY of NAIROBI eLEARNING PORTAL</p>
+      </div>
+    </div>
+    <div class="header-right">
+      <div class="search-box">
+        <input type="text" placeholder="Search Courses">
+        <button>Search</button>
+      </div>
+      <div>
+        <span class="icon">🔔</span>
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-chat-fill" viewBox="0 0 16 16">
+            <path d="M8 15c4.418 0 8-3.134 8-7s-3.582-7-8-7-8 3.134-8 7c0 1.76.743 3.37 1.97 4.6-.097 1.016-.417 2.13-.771 2.966-.079.186.074.394.273.362 2.256-.37 3.597-.938 4.18-1.234A9 9 0 0 0 8 15"/>
+          </svg>
+            <i class="bi bi-chat-fill"></i>
+          <span class="icon">👤Student: OKATCH emmanuel </span>
+      </div>
+    </div>
+  </header>
+
+  <nav>
+    <a href="#">Home</a>
+    <a href="#">Dashboard</a>
+    <div class="dropdown">
+      <a href="#">Events ▾</a>
+      <div class="dropdown-content">
+        <a href="#">Upcoming</a>
+        <a href="#">Past</a>
+        <a href="#">Calendar</a>
+      </div>
+    </div>
+    <div class="dropdown">
+      <a href="#">My Courses ▾</a>
+      <div class="dropdown-content">
+        <a href="#">HIV AND AIDS</a>
+        <a href="#">First AID</a>
+        <a href="#">Biotechnology and Bioinformatics</a>
+      </div>
+    </div>
+  </nav>
+
+  <div class="main">
+    <div class="course-overview">
+      <h2>Course Overview</h2>
+      <div>
+        <button onclick="loadCourses()">Refresh Courses</button>
+      </div>
+      <div id="course-list" class="course-list"></div>
+    </div>
+
+    <div class="sidebar">
+      <h3>Navigation</h3>
+      <ul>
+        <li><a href="#">Dashboard</a></li>
+        <li><a href="#">Site Home</a></li>
+        <li><a href="#">Site Pages</a></li>
+        <li><strong>My Courses</strong></li>
+        <ul>
+          <li><a href="#">HIV AND AIDS</a></li>
+          <li><a href="#">Economics History of Kenya</a></li>
+          <li><a href="#">Basic Mathematics</a></li>
+          <li><a href="#">Introduction to Sociology</a></li>
+          <li><a href="#">Introduction to Logic</a></li>
+          <li><a href="#">Legal Systems & Methods</a></li>
+          <li><a href="#">Introduction to Physchology</a></li>
+        </ul>
+      </ul>
+      <div class="calendar">
+        <h4>Today's Date</h4>
+        <p id="date"></p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>University of Nairobi &copy; 2025 | UNITATE ET LABORE</p>
+  </footer>
+
+</body>
+</html>
